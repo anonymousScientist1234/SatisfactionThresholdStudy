@@ -21,6 +21,7 @@ kMax = .1;
 tolerance = .005; 
 
 taskSwitchVec = zeros(sims*4*2*4, 1);
+stateSwitchVec = zeros(sims*4*2*4, 1);
 loadingVec = zeros(sims*4*2*4, 1);
 DOLVec = zeros(sims*4*2*4, 1);
 timeToEqVec = zeros(sims*4*2*4, 1);
@@ -112,10 +113,11 @@ for i = 1:sims
                     thresholds2, M, threshType, stimType, T, N, s, l); 
     
                 %measure the outcomes of the simulation 
-                [taskSwitch, loading, DOL, timeToEq] = makeMeasurements(stateMat, sMat, T, N, lambda, K, M, stimType);  
+                [taskSwitch, stateSwitches, loading, DOL, timeToEq] = makeMeasurements(stateMat, sMat, T, N, lambda, K, M, stimType);  
 
                 %collect data on performance and parameter values 
                 taskSwitchVec(counter) = taskSwitch;
+                stateSwitchVec(counter) = stateSwitches;
                 loadingVec(counter) = loading;
                 DOLVec(counter) = DOL;
                 timeToEqVec(counter) = timeToEq; 
@@ -145,8 +147,9 @@ for i = 1:sims
 end
 
 %output data as a csv file 
-data = table(threshTypeVec, stimTypeVec, TVec, NVec, KVec, PVec, betaVec, muVec, sigmaVec, sVec, lVec, DOLVec, taskSwitchVec,loadingVec, timeToEqVec); 
-data.Properties.VariableNames = ["ThresholdType", "CueType", "T", "N", "K", "P", "Beta", "Mu", "Sigma", "s", "l", "DOL", "TaskSwitches", "Loading", "TimetoEq"];
+data = table(threshTypeVec, stimTypeVec, TVec, NVec, KVec, PVec, betaVec, muVec, sigmaVec, sVec, lVec, DOLVec, taskSwitchVec, stateSwitchVec, loadingVec, timeToEqVec); 
+data.Properties.VariableNames = ["ThresholdType", "CueType", "T", "N", "K", "P", "Beta", "Mu", "Sigma", "s", "l", "DOL", "TaskSwitches", "StateSwitches", "Loading", "TimetoEq"];
 writetable(data,'thresholdComparisons.csv');
+
 
 %system('shutdown -s')
