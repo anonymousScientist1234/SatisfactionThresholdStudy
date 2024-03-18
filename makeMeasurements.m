@@ -1,14 +1,26 @@
-function [taskSwitches, loading, DOL, timeToEq] = makeMeasurements(stateMat, sMat, T, N, lambda, K, timesteps, stimType) 
+function [taskSwitches, stateSwitches, loading, DOL, timeToEq] = makeMeasurements(stateMat, sMat, T, N, lambda, K, timesteps, stimType) 
 
 [a, b] = size(stateMat); 
 
 %calculate the number of state switches, which will be the number of times
 %the current state is different from the previous state, summed across all
 %individuals in the colony 
-taskSwitches = 0; 
+stateSwitches = 0; 
 for i = 1:b
     states = stateMat(:, i); 
     for j = 2:a
+        if states(j) ~= states(j-1)
+            stateSwitches = stateSwitches+1; 
+        end
+    end
+end
+
+%calculate number of task switches, which ignores resting state
+taskSwitches = 0; 
+for i = 1:b
+    states = stateMat(:, i);
+    states = states(states>0);
+    for j = 2:length(states)
         if states(j) ~= states(j-1)
             taskSwitches = taskSwitches+1; 
         end
